@@ -1,5 +1,6 @@
 openapi: 3.0.3
 
+
 info:
   title: BUPT Software Engineering Homework API
   description: BUPT Software Engineering Homework API
@@ -13,6 +14,59 @@ security:
   - sessionAuth: [ ]
 
 paths:
+  /register:
+    post:
+      tags:
+        - Authorization
+      summary: Register as admin
+      parameters:
+        - in: query
+          name: no-csrf
+          schema:
+            type: boolean
+          description: Need CSRF Token Or not
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: admin
+                name:
+                  type: string
+                  example: admin
+                password:
+                  type: string
+                  example: admin
+      responses:
+        '200':
+          description: Register successfully
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: session=abcde12345; Path=/
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    example: admin
+                  csrf_token: # Optional: anti-CSRF token
+                    type: string
+                    example: abcde12345
+        '401':
+          description: Login failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+
   /login:
     post:
       tags:
@@ -97,12 +151,30 @@ paths:
         - Data Collect
       summary: Record data
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              type: array
-              items:
-                - $ref: '#/components/schemas/record_entry'
+              type: object
+              properties:
+                room:
+                  type: string
+                  example: 2-233
+                temperature:
+                  type: integer
+                  example: admin
+                wind_speed:
+                  type: integer
+                  example: admin
+                mood:
+                  type: string
+                  example: cold
+                sweep:
+                  type: boolean
+                  example: true
+                is_on:
+                  type: boolean
+                  example: true
       responses:
         '200':
           description: Record successfully
